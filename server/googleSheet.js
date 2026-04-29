@@ -1,9 +1,16 @@
-const { google } = require("googleapis");
+const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+const { google } = require('googleapis');
 
-const auth = new google.auth.GoogleAuth({
-  keyFile: "service-account.json",
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"]
-});
+// ✅ ADD THIS
+const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+
+const auth = new google.auth.JWT(
+  serviceAccount.client_email,
+  null,
+  serviceAccount.private_key,
+  ['https://www.googleapis.com/auth/spreadsheets']
+);
+
 
 const spreadsheetId = "1bMCEaU5zA2Gag0ALnxpljUHXApPPr9P_V1mjR0k-1-Q";
 
