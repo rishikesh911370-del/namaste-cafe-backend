@@ -76,6 +76,9 @@ app.post("/toggle-orders", (req, res) => {
 // 🔥 MAKE IO GLOBAL
 app.set("io", io);
 
-server.listen(5000, () => {
-  console.log("🚀 Server + Socket running on 5000");
+
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => {
+  console.log(`🚀 Server + Socket running on ${PORT}`);
 });
