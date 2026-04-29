@@ -1,4 +1,3 @@
-const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
 const { google } = require('googleapis');
 
 // ✅ ADD THIS
