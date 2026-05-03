@@ -13,7 +13,73 @@ const orderRoutes = require("./routes/orders");
 const app = express();
 app.use(cors());
 app.use(express.json());
+const fs = require("fs");
+const path = require("path");
 
+const visitFile = path.join(__dirname, "visits.json");
+
+// ===== TRACK VISIT =====
+app.post("/track-visit", (req, res) => {
+  let visits = [];
+
+  if (fs.existsSync(visitFile)) {
+    try {
+      visits = JSON.parse(fs.readFileSync(visitFile));
+    } catch {
+      visits = [];
+    }
+  }
+
+  visits.push({ time: new Date().toISOString() });
+
+  fs.writeFileSync(visitFile, JSON.stringify(visits, null, 2));
+
+  res.json({ success: true });
+});
+
+app.get("/visit-stats", (req, res) => {
+  let visits = [];
+
+  if (fs.existsSync(visitFile)) {
+     try {
+    visits = JSON.parse(fs.readFileSync(visitFile));
+  } catch (err) {
+    visits = [];
+  }
+}
+
+  const now = new Date(
+  new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+);
+
+  let daily = 0;
+  let weekly = 0;
+  let monthly = 0;
+  let yearly = 0;
+
+  visits.forEach(v => {
+    const visitDate = new Date(v.time);
+
+    const diffDays = (now - visitDate) / (1000 * 60 * 60 * 24);
+
+    if (diffDays <= 1) daily++;
+    if (diffDays <= 7) weekly++;
+    if (
+      visitDate.getMonth() === now.getMonth() &&
+      visitDate.getFullYear() === now.getFullYear()
+    ) monthly++;
+
+    if (visitDate.getFullYear() === now.getFullYear()) yearly++;
+  });
+
+  res.json({
+    total: visits.length,
+    daily,
+    weekly,
+    monthly,
+    yearly
+  });
+});
 
 // ===== GOOGLE API KEY =====
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
