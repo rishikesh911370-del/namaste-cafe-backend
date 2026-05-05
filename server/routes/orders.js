@@ -53,7 +53,11 @@ riderStatus: "Pending"
     saveOrders();
 
     // ✅ SEND TO GOOGLE SHEET
-    await addOrderToSheet(order);
+   try {
+  await addOrderToSheet(order);
+} catch (err) {
+  console.log("⚠️ Sheet error:", err.message);
+}
 
     // 🔥 SOCKET
     const io = req.app.get("io");
